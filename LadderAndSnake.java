@@ -91,11 +91,30 @@ public class LadderAndSnake {
 		}
 		
 		
+		//Declare new values
+		int p1 = 0;
+		int p2 = 0;
 		if (p1Dice > p2Dice) {
+			
+			p1 = LadderAndSnake.flipDice();
+			p1location+=p1;
+			p2 = LadderAndSnake.flipDice();
+			p2location +=p2;
+			
+			System.out.println("Player 1 got a dice value of "+p1+"; now in square "+p1location);
+			System.out.println("Player 2 got a dice value of "+p2+"; now in square "+p2location);
 			
 		}
 		
 		else if (p2Dice > p1Dice) {
+			
+			p2 = LadderAndSnake.flipDice();
+			p2location +=p2;
+			p1 = LadderAndSnake.flipDice();
+			p1location+=p1;
+			
+			System.out.println("Player 2 got a dice value of "+p2+"; now in square "+p2location);
+			System.out.println("Player 1 got a dice value of "+p1+"; now in square "+p1location);
 			
 		}
 		
@@ -107,8 +126,14 @@ public class LadderAndSnake {
 	}
 	
 	
+	//ERRORS HERE- INCOMPLETE
+	public int Ladder() {
+		
+	}
 	
-	
+	public int snake() {
+		
+	}
 	
 	public String toString() {
 		return "";
