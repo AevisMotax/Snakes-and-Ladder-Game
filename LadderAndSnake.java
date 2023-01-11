@@ -126,7 +126,7 @@ public class LadderAndSnake {
 	}
 	
 	
-	//ERRORS HERE- INCOMPLETE
+	
 	public int Ladder() {
 		
 	}
@@ -134,6 +134,7 @@ public class LadderAndSnake {
 	public int snake() {
 		
 	}
+	
 	
 	public String toString() {
 		return "";
