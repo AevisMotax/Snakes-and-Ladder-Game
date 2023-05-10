@@ -1,20 +1,15 @@
-/*
- * ---------------------------
- * Assignment 1  Part I 
- * Written by: Robert CHEN 40241709 and Alexandru Ilie 40248696
- * COMP 249 Section S - Winter 2023
- * 3 February 2023
- * --------------------------- */
-
-
-/*COMMENT: This main file has everything.
-*/
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
-import java.util.Arrays;
+import java.io.*;
 import java.util.*;
-import java.lang.Thread;
-
+/**
+ * This main file class shall be the start-up point of the players: 
+ *	they may create or restart a game of snake and ladder
+ * 
+ * @author Robert  CHEN and Alexandru Ilie
+ * @version 1.0
+ *
+ *
+ */
 public class LadderAndSnake {
 	Scanner keyb = new Scanner(System.in);
 	private int maxPlayers;
@@ -28,11 +23,17 @@ public class LadderAndSnake {
 	private int[][] boardNum = new int[10][10];
 	private boolean hasWon = false;
 
-	
+	/*
+	 * Default constructor
+	 */
 	public LadderAndSnake() {
 
 	}
 	
+	/**
+	 * Copy constructor
+	 * @param S, another game
+	 */
 	public LadderAndSnake(LadderAndSnake S) {
 		
 		this.maxPlayers = S.maxPlayers;
@@ -80,7 +81,7 @@ public class LadderAndSnake {
 	}
 	
 	//Whether the users wish to continue or quit the game
-	private void gameContinue() {
+/*	private void gameContinue() {
 	//	Scanner keyb2 = new Scanner(System.in);
 		System.out.print("Would you like to continue the ga"
 				+ "me? If yes, press Y. If not, press N\n"
@@ -99,20 +100,12 @@ public class LadderAndSnake {
 			System.exit(0);
 		}
 
-	}
+	} */
 	
 	//If users wish to look at the board and their position
-	public void lookBoard() {		
-	/*	Scanner keyb= new Scanner(System.in);
-		String S = "";
-		System.out.print("Would you like to currently look at the board and view the standings?: Press Y for Yes, N for No\n");
-		/* hasNext() is used to verify if there are any more data to read, since.next() is used continously
-		 * By that, it will cause a logic error and terminate program. using a while loop will end that
-		 */ 
-		/*System.out.print("Would you like to currently look at the board and view the standings?: Press Y for Yes, N for No\n");
-		String s= keyb.next();
-		s = s.toLowerCase();
-		if (s.equals("y")) {*/
+	public void lookBoard() {	
+			System.out.println("\nhere is a quick visualization of the current board.");
+			keyb.nextLine();
 			 //Display the board after modifications
 			for(int i = 0; i<10;i+=2) {
 				for(int j = 0; j<10;j++) {
@@ -120,7 +113,7 @@ public class LadderAndSnake {
 					System.out.print("|\t"+board[i][j]+"\t");
 					
 					if (j== 9) {
-					break;
+						break;
 					}
 				}
 				System.out.println("|\n-----------------------------------------------------------"
@@ -138,9 +131,9 @@ public class LadderAndSnake {
 				System.out.println("|\n-----------------------------------------------------------"
 						+ "----------------------------------------------------------------------"
 						+ "---------------------------");
-				//} 
-		
+				
 	        }
+			keyb.nextLine();
 		}
 	
 	
@@ -149,29 +142,33 @@ public class LadderAndSnake {
 		 board = new String[10][10];
 		 boardNum = new int[10][10];
 		 int counter =100;
-			//BoardNum
-			for(int i = 0; i<10;i+=2) {	
-					for(int j = 0; j<10;j++) {
-					boardNum[i][j] = counter;
-					counter--;
-					
-					if (j== 9) {
+		 
+		 //Pause momentarily
+		 keyb.nextLine();
+		 
+		//BoardNum
+		for(int i = 0; i<10;i+=2) {	
+			for(int j = 0; j<10;j++) {
+				boardNum[i][j] = counter;
+				counter--;
+				
+				if (j== 9) {
 					counter++;
+					break;
+				}
+			}
+			counter = counter-10;
+			
+			for(int j = 0; j<10;j++) {
+				boardNum[i+1][j] = counter;
+				counter++;
+				if (j == 9) {
+					counter--;
 					break;
 					}
 				}
-				counter = counter-10;
-				
-				for(int j = 0; j<10;j++) {
-					boardNum[i+1][j] = counter;
-					counter++;
-					if (j == 9) {
-						counter--;
-						break;
-						}
-					}
-				counter = counter-10;
-			}
+			counter = counter-10;
+		}
 		 
 		 //Display the board at the beginning			
 		for(int i = 0; i<10;i+=2) {
@@ -208,13 +205,26 @@ public class LadderAndSnake {
 
 	//Modify a players location
 	private void boardPosition(int x , int y , int z, int w) {
+		//Remove previous location
+		String junk = String.format("X%d", y);
+		
+	/*	for (int i = 0; i < 10; i++) {
+			for (int j = 0; j <10; j++) {
+				if (board[i][j].equals(junk)) {
+					board[i][j] = ""+boardNum[i][j];
+				}					
+			}		
+		} */
+				
+		//Insert player's new location
 		for (int i = 0; i < 10; i++) {
 			for (int j = 0; j <10; j++) {
 
 				if (x == boardNum[i][j]) {
-					board[i][j] = String.format("X%d", y);
+					board[i][j] = junk;
 				}
-				if (z == boardNum[i][j]) {
+			//	if (z == boardNum[i][j]) {
+				if (board[i][j].equals(junk) && z == boardNum[i][j]) {
 					board[i][j] = ""+boardNum[i][j];
 				}
 			}
@@ -228,13 +238,13 @@ public class LadderAndSnake {
 					if (board[i][j].equals("X1") && boardNum[i][j] == playersLocation[getOpponent(w)]) {
 						playersLocation[getOpponent(w)] = 0;
 					//	System.out.println(" Player 2 has been kicked out, restarting from the start(0)");
-						details[w]+= "\nOh no! Player 2 has landed on the same spot as Player 1!"
+						details[w]+= "\nOh no! Player 2 is on the same spot as Player 1!"
 								+ " Bye Bye you've been kicked, restarting from the start(0)";
 					}
 					else if (board[i][j].equals("X2")&& boardNum[i][j] == playersLocation[getOpponent(w)]) {
 						playersLocation[getOpponent(w)] = 0;
 					//	System.out.println(" Player 1 has been kicked out, restarting from the start(0)");
-						details[w]+="\nOh no! Player 1 has landed on the same spot as Player 2!"
+						details[w]+="\nOh no! Player 1 is on the same spot as Player 2!"
 								+ " Bye Bye you've been kicked, restarting from the start(0)";
 					}
 				}
@@ -244,12 +254,19 @@ public class LadderAndSnake {
 	}
 	
 	public void Rules() {
-		//Declare Scanner and variables
-	//	Scanner keyb = new Scanner(System.in);
-		//int numPlayers;
+		//
 		int counter = 1;
-		System.out.println("To begin, initialize the amount of players:");
-		maxPlayers = keyb.nextInt();
+		System.out.println("\nTo begin, initialize the amount of players:");
+		while (true) {
+			try {
+				maxPlayers = keyb.nextInt();
+				break;
+			}
+			catch (InputMismatchException e) {
+				System.out.println("Invalid. Please enter a number:\n");
+				keyb.nextLine();
+			}
+		}
 		//initialize an array to sort out players
 		 sortPlayers = new int[getPlayers()];
 		
@@ -322,12 +339,10 @@ public class LadderAndSnake {
 	public void play() {
 		//Apply temporary variables
 		int counter2 = 0;
-		int counter3 = 0;
 		//Show the board
-		//System.out.println("Here is a representation of the board:");
-		//Thread.sleep(3000);
 		board();
-		lookBoard();
+		Rules();
+	//	lookBoard();
 
 		//Declare new values to assign temporary values of a players dice rolls and its values
 		playersDice = new int[getPlayers()];
@@ -337,12 +352,12 @@ public class LadderAndSnake {
 		details = new String[getPlayers()];
 		//How the snake and ladder game is played
 		while (true) {
+			keyb.nextLine();
 			counter2++;
-			counter3++;
 				//if players wish to continue
-				if (counter3 % 4 == 0) {
+			/*	if (counter3 % 4 == 0) {
 					gameContinue();
-				} 
+				} */
 			
 				//if players wish to look at the board
 				if (counter2 % 4 == 0) { 
@@ -351,6 +366,7 @@ public class LadderAndSnake {
 				
 				
 			for (int i = 0; i < sortPlayers.length; i++) {
+				int junk2 = playersLocation[i];
 				playersDice[i] = flipDice();
 				playersLocation[i] += playersDice[i];
 				//Starting to set the output
@@ -358,7 +374,7 @@ public class LadderAndSnake {
 				" "+playersDice[i]+"; gone up to square "+playersLocation[i];
 				//Methods to be implemented in order to change some things on the board	
 				Victory(i); Ladder(i); snake(i);
-				boardPosition(playersLocation[i], sortPlayers[i], playersLocation[i]-playersDice[i], i);	
+				boardPosition(playersLocation[i], sortPlayers[i], junk2, i);	
 
 				
 				//print the results
@@ -373,7 +389,6 @@ public class LadderAndSnake {
 	
 	//New methods used to adjust the game depending on the user's roll dice count.
 	//The ladder method is used to help players if they land on the bottom of a ladder
-	//New methods used to adjust the game depending on the user's roll dice count.
 	private void Ladder(int x) {
 		//temporary variables, 
 		int pLocation = playersLocation[x];
@@ -416,11 +431,8 @@ public class LadderAndSnake {
 				details[x] +=" then up to square 100";
 				break;
 		}
-		
-		playersLocation[x] = pLocation;
-		//Tell that the game is not over
-		
-		
+		//Re-assign new value to the players Location.		
+		playersLocation[x] = pLocation;		
 	}
 	
 	private void snake(int x) {
@@ -479,7 +491,6 @@ public class LadderAndSnake {
 			else if (playersLocation[x]> 100) {	
 				/*temporary variables to modify 
 				 * if players go overboard 100. */
-				
 				int y;
 				int y2 = playersLocation[x];
 				y = playersLocation[x]-100;
