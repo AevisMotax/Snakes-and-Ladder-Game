@@ -1,34 +1,34 @@
-/*
- * ---------------------------
- * Assignment 1 Part I 
- * Written by: Robert CHEN 40241709 and Alexandru Ilie 40248696
- * COMP 249 Section S - Winter 2023
- * 3 February 2023
- * --------------------------- */
-/* The driver file is where many things are being played.
- * 
- * 
- * 
- */
+//Import Scanner 
 import java.util.Scanner;
 
+/**
+ * This main file class shall be the start-up point of the players: 
+ *	they may create or restart a game of snake and ladder
+ * 
+ * @author Robert  CHEN and ALexandru Ilie
+ * @version 1.0
+ * 
+ *
+ */
 public class PlayLadderAndSnake {
-
+	/** Program's entry point
+	 * 
+	 * @param args an array of command-line arguments for the application
+	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		Scanner keyb = new Scanner(System.in);
-		LadderAndSnake Game1 = new LadderAndSnake();
+
+				
+		/**
+		 * Declare the object required to start a game:
+		 */
+		LadderAndSnake game = new LadderAndSnake();
 		
 		System.out.println("Hello, welcome to the Snake And Ladder Game!");
-		Game1.Rules();
-		Game1.play();
 		
+		//Invoke play() method to simulate the game
+		game.play();
 		
-		keyb.close();	
+
 	}
 
 }
-
-
-
-
