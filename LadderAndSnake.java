@@ -12,7 +12,7 @@ import java.util.*;
  */
 public class LadderAndSnake {
 	Scanner keyb = new Scanner(System.in);
-	private int maxPlayers;
+	private int maxPlayers; //next time, I'll implement a weird thing to make it look like the user can input more character.
 	private String [] playersName;
 	private int[] playersDice;
 	private int[] selection;
@@ -82,25 +82,26 @@ public class LadderAndSnake {
 	
 	//Whether the users wish to continue or quit the game
 /*	private void gameContinue() {
-	//	Scanner keyb2 = new Scanner(System.in);
+		List<String> temp  = new ArrayList<String>();
+		
+		int i = 0;
 		System.out.print("Would you like to continue the ga"
 				+ "me? If yes, press Y. If not, press N\n"
-				+ "Note: Both Players must agree.\n"+playersName[0]+": ");
+				+ "Note: All Players must agree.\n");
 
-		String s1= keyb.nextLine();
-		//s1+=keyb2.nextLine();
-		s1 =s1.toLowerCase();	
-		System.out.print(playersName[1]+": ");
-		String s2 = keyb.nextLine();
-		//s2+=keyb2.nextLine();
-		s2 =s2.toLowerCase();	
-	//	keyb.close();
-		if (s1.equals("n") && s2.equals("n")) {
-			System.out.println("THANK YOU FOR PLAYING THE GAME!!");
-			System.exit(0);
+		for ( String name : playersName){
+			System.out.printf("%f : ",name);
+			temp.add(i++, keyb.nextLine());
+		}
+		
+		//Put everything into lower case
+		
+		//Check if everyone said Yes (Y) or some random nonsense
+		if (temp.stream().allMatch("")) {
+			
 		}
 
-	} */
+	} */ 
 	
 	//If users wish to look at the board and their position
 	public void lookBoard() {	
@@ -109,7 +110,6 @@ public class LadderAndSnake {
 			 //Display the board after modifications
 			for(int i = 0; i<10;i+=2) {
 				for(int j = 0; j<10;j++) {
-					board[i][j] = ""+board[i][j];
 					System.out.print("|\t"+board[i][j]+"\t");
 					
 					if (j== 9) {
@@ -121,8 +121,6 @@ public class LadderAndSnake {
 						+ "----------------------------");
 	
 				for(int j = 0; j<10;j++) {
-					board[i+1][j] = ""+board[i+1][j];
-	
 					System.out.print("|\t"+board[i+1][j]+"\t");
 					if (j == 9) {
 						break;
@@ -150,6 +148,7 @@ public class LadderAndSnake {
 		for(int i = 0; i<10;i+=2) {	
 			for(int j = 0; j<10;j++) {
 				boardNum[i][j] = counter;
+				board[i][j] = ""+counter;
 				counter--;
 				
 				if (j== 9) {
@@ -161,6 +160,7 @@ public class LadderAndSnake {
 			
 			for(int j = 0; j<10;j++) {
 				boardNum[i+1][j] = counter;
+				board[i+1][j] = ""+counter;
 				counter++;
 				if (j == 9) {
 					counter--;
@@ -168,63 +168,24 @@ public class LadderAndSnake {
 					}
 				}
 			counter = counter-10;
-		}
-		 
-		 //Display the board at the beginning			
-		for(int i = 0; i<10;i+=2) {
-			
-			for(int j = 0; j<10;j++) {
-				board[i][j] = ""+boardNum[i][j];
-				counter--;
-				System.out.print("|\t"+board[i][j]+"\t");
-				if (j== 9) {
-				counter++;
-				break;
-				}
-			}
-			System.out.println("|\n-----------------------------------------------------------"
-					+ "----------------------------------------------------------------------"
-					+ "----------------------------");
-			counter = counter-10;
-		
-			for(int j = 0; j<10;j++) {
-				board[i+1][j] = ""+boardNum[i+1][j];
-				counter++;
-				System.out.print("|\t"+board[i+1][j]+"\t");
-				if (j == 9) {
-					counter--;
-					break;
-					}
-				}
-			counter = counter-10;
-			System.out.println("|\n-----------------------------------------------------------"
-					+ "----------------------------------------------------------------------"
-					+ "---------------------------");
-			}	
+		}	
 	}
 
 	//Modify a players location
-	private void boardPosition(int x , int y , int z, int w) {
+	private void boardPosition(int xLocation , int yCurrentPlayers , int zPreviousLocation, int wPlayersTurn) {
 		//Remove previous location
-		String junk = String.format("X%d", y);
-		
-	/*	for (int i = 0; i < 10; i++) {
-			for (int j = 0; j <10; j++) {
-				if (board[i][j].equals(junk)) {
-					board[i][j] = ""+boardNum[i][j];
-				}					
-			}		
-		} */
+		String junk = String.format("X%d", yCurrentPlayers);
+
 				
 		//Insert player's new location
 		for (int i = 0; i < 10; i++) {
 			for (int j = 0; j <10; j++) {
 
-				if (x == boardNum[i][j]) {
-					board[i][j] = junk;
+				if (xLocation == boardNum[i][j]) {
+					board[i][j] = ""+junk;
 				}
-			//	if (z == boardNum[i][j]) {
-				if (board[i][j].equals(junk) && z == boardNum[i][j]) {
+
+				if (board[i][j].equals(junk) && zPreviousLocation == boardNum[i][j]) {
 					board[i][j] = ""+boardNum[i][j];
 				}
 			}
@@ -234,17 +195,17 @@ public class LadderAndSnake {
 		for (int i = 0; i < 10; i++) {
 			for (int j = 0; j <10; j++) {
 				//HARDCODE. Change things if a player lands on another person's position
-				if (playersLocation[w] == playersLocation[getOpponent(w)]) {
-					if (board[i][j].equals("X1") && boardNum[i][j] == playersLocation[getOpponent(w)]) {
-						playersLocation[getOpponent(w)] = 0;
+				if (playersLocation[wPlayersTurn] == playersLocation[getOpponent(wPlayersTurn)]) {
+					if (board[i][j].equals("X1") && playersLocation[getOpponent(wPlayersTurn)] == boardNum[i][j]) {
+						playersLocation[getOpponent(wPlayersTurn)] = 0;
 					//	System.out.println(" Player 2 has been kicked out, restarting from the start(0)");
-						details[w]+= "\nOh no! Player 2 is on the same spot as Player 1!"
+						details[wPlayersTurn]+= "\nOh no! Player 2 is on the same spot as Player 1!"
 								+ " Bye Bye you've been kicked, restarting from the start(0)";
 					}
-					else if (board[i][j].equals("X2")&& boardNum[i][j] == playersLocation[getOpponent(w)]) {
-						playersLocation[getOpponent(w)] = 0;
+					else if (board[i][j].equals("X2")&& playersLocation[getOpponent(wPlayersTurn)] == boardNum[i][j]) {
+						playersLocation[getOpponent(wPlayersTurn)] = 0;
 					//	System.out.println(" Player 1 has been kicked out, restarting from the start(0)");
-						details[w]+="\nOh no! Player 1 is on the same spot as Player 2!"
+						details[wPlayersTurn]+="\nOh no! Player 1 is on the same spot as Player 2!"
 								+ " Bye Bye you've been kicked, restarting from the start(0)";
 					}
 				}
@@ -253,10 +214,13 @@ public class LadderAndSnake {
 		
 	}
 	
+	
 	public void Rules() {
-		//
+		//Initialize the starting game
 		int counter = 1;
 		System.out.println("\nTo begin, initialize the amount of players:");
+		
+		//loop until we get a correct input
 		while (true) {
 			try {
 				maxPlayers = keyb.nextInt();
@@ -288,7 +252,7 @@ public class LadderAndSnake {
 		for (int i = 0; i < sortPlayers.length; i++) {
 		System.out.format("May Player %d enter his name: ", i+1);
 		playersName[i] = keyb.next();
-		keyb.nextLine(); //System.out.println();
+		keyb.nextLine(); 
 		sortPlayers[i] = i+1;
 		}
 		
@@ -298,13 +262,15 @@ public class LadderAndSnake {
 			//values for players in order to sort the order
 			while(true) {
 				for (int i = 0; i < sortPlayers.length; i++) {
-					//for (int j=0; j <=0; )
 					selection[i] = flipDice();	
 					System.out.format("Player %d got a dice value of %d\n",sortPlayers[i], selection[i]);
+					keyb.nextLine(); //pause the game momentarily
 				}
-				//In order to try and sort every one out
+				
+				//In order to try and sort every one out [SELECTION SORTING NOT EFFICIENT]
 				for (int i = 0; i < sortPlayers.length; i++) {
 					for (int j = i+1; j <sortPlayers.length; j++) {
+						//Reposition the start 
 						if (selection[i] < selection[j]) {
 							int garbage = sortPlayers[i];
 							sortPlayers[i] = sortPlayers[j];
@@ -316,10 +282,10 @@ public class LadderAndSnake {
 						}
 						//Redo if two  values are the same
 						else if (selection[i] == selection[j]) {
-							System.out.println("A tie was achieved between Player 1 and Player 2. "
-							+ "Attempting to break the tie");
+							System.out.printf("A tie was achieved between Player %d and Player %d."
+							+ "Attempting to break the tie\n",sortPlayers[i],sortPlayers[j]);
 							counter++;
-							break;
+							continue;
 						}
 					}
 				}
@@ -332,50 +298,50 @@ public class LadderAndSnake {
 			//Detail the playing order
 		System.out.printf("Reached Final decision on order of playing: Player %d, then Player %d."
 				+ " It took %d attempts before a decision could be made.\n\n",sortPlayers[0],sortPlayers[1],counter);
-		//CLose Scanner
-	//	keyb.close();
 	}
 	
 	public void play() {
 		//Apply temporary variables
 		int counter2 = 0;
+		int dice = 0;
 		//Show the board
 		board();
+		lookBoard();
 		Rules();
-	//	lookBoard();
 
 		//Declare new values to assign temporary values of a players dice rolls and its values
+		//SHOULD PROBABLY MAKE A DICTIONARY FOR THIS ONE
 		playersDice = new int[getPlayers()];
 		playersLocation = new int[getPlayers()];
 		
-		
+		//Just some strings to figure out where each players are and then.
 		details = new String[getPlayers()];
+		
 		//How the snake and ladder game is played
 		while (true) {
 			keyb.nextLine();
 			counter2++;
 				//if players wish to continue
-			/*	if (counter3 % 4 == 0) {
-					gameContinue();
-				} */
+//				if (counter3 % 4 == 0) {
+//					gameContinue();
+//				} 
 			
 				//if players wish to look at the board
 				if (counter2 % 4 == 0) { 
-						lookBoard();	
+					lookBoard();	
 				} 
 				
-				
+			//We start the game: Each player gets a turn to roll a "virtual" dice	
 			for (int i = 0; i < sortPlayers.length; i++) {
-				int junk2 = playersLocation[i];
-				playersDice[i] = flipDice();
-				playersLocation[i] += playersDice[i];
+				int junk = playersLocation[i];
+				dice = flipDice();
+				playersLocation[i] += dice;
 				//Starting to set the output
 				details[i] = "Player "+sortPlayers[i]+" got a dice value of"+ 
-				" "+playersDice[i]+"; gone up to square "+playersLocation[i];
+				" "+dice+"; gone up to square "+playersLocation[i];
 				//Methods to be implemented in order to change some things on the board	
 				Victory(i); Ladder(i); snake(i);
-				boardPosition(playersLocation[i], sortPlayers[i], junk2, i);	
-
+				boardPosition(playersLocation[i], sortPlayers[i], junk, i);	
 				
 				//print the results
 				System.out.println(details[i]);
